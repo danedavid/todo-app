@@ -137,6 +137,17 @@ input[type="text"].input-heading:focus {
   color: #ffffff;
 }
 
+.close-button {
+  position: absolute;
+  top: 20px;
+  right: 10px;
+}
+
+.close-button:hover {
+  cursor: pointer;
+  opacity: 0.8;
+}
+
 /* override for materialize.css */
 .collection-item {
   padding: 0 !important;
@@ -146,4 +157,8 @@ input[type="text"].input-heading:focus {
 
 .card-action {
   padding: 5px 0 !important;
+}
+
+.card-content {
+  position: relative;
 }

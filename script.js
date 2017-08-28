@@ -31,10 +31,19 @@ app.doneList = new app.TodoCollection();
 app.ItemView = Backbone.View.extend({
   tagName: 'li',
   itemTemplate: _.template($("#childTemplate").html()),
+  initialize: function () {
+    this.model.on('destroy', this.remove, this);
+  },
+  events: {
+    'click .close-button': 'destroyItem'
+  },
   render: function () {
     this.$el.addClass("collection-item");
     this.$el.html(this.itemTemplate(this.model.toJSON()));
     return this;
+  },
+  destroyItem: function () {
+    this.model.destroy();
   }
 });
 
