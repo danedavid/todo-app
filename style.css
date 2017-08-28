@@ -46,7 +46,8 @@ h2 {
 }
 
 .input-task,
-input[type="text"].input-author {
+input[type="text"].input-author,
+input[type="text"].input-heading {
   background: #ffffff;
   width: 100%;
   border-radius: 5px;
@@ -65,8 +66,15 @@ input[type="text"].input-author {
   height: 100px;
 }
 
-input[type="text"].input-author {
-  height: 25px;
+input[type="text"].input-author,
+input[type="text"].input-heading {
+  height: 30px;
+}
+
+input[type="text"].input-author:focus,
+input[type="text"].input-heading:focus {
+  border-bottom: 0 !important;
+  box-shadow: none !important;
 }
 
 .input-button {
@@ -93,7 +101,12 @@ input[type="text"].input-author {
   width: 300px;
 }
 
+.done-container {
+  width: 90%;
+}
+
 .my-collection {
+  border: 0;
   border-radius: 10px;
   text-align: center;
 }
@@ -117,4 +130,9 @@ input[type="text"].input-author {
 
 .add-to-icon {
   font-size: 32px;
+}
+
+.collection-item {
+  padding: 0 !important;
+  background-color: none !important;
 }

@@ -3,7 +3,7 @@
   <link href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/css/materialize.min.css" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css?family=Courgette|Pacifico" rel="stylesheet">
   <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
-  <link rel="stylesheet" href="style.css" />
+  <link href="style.css" rel="stylesheet" />
   <title>To-Do App</title>
 </head>
 <body>
@@ -14,12 +14,23 @@
     <section class="main-section">
       <div class="container todo-container">
         <div class="input-container">
+          <input class="input-heading" type="text" placeholder="Task Heading" />
           <textarea class="input-task" name="todo-task" rows="5" cols="80" placeholder="Brief description of task here..."></textarea>
           <input class="input-author" type="text" placeholder="Author" />
           <button type="button" class="input-button">Enter To-Do</button>
         </div>
         <ul class="collection my-collection todo-collection">
-
+          <li class="collection-item">
+            <div class="card blue-grey darken-1" draggable="true">
+              <div class="card-content white-text">
+                <span class="card-title">Task 1</span>
+                <p>To do something like everything.</p>
+              </div>
+              <div class="card-action">
+                <span class="task-author">John Doe</span>
+              </div>
+            </div>
+          </li>
         </ul>
       </div>
       <div class="container" >
@@ -36,11 +47,12 @@
           <li class="add-to-icon">
             <i class="fa fa-plus-square" aria-hidden="true"></i>
           </li>
+
         </ul>
       </div>
     </section>
     <section class="main-section main-section-2">
-      <div class="container">
+      <div class="done-container">
         <ul class="collection my-collection done-collection">
           <li class="collection-header"><h4>Done</h4></li>
           <li class="add-to-icon">
