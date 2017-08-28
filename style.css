@@ -1,0 +1,149 @@
+/* stylesheet for index.html */
+
+* {
+  box-sizing: border-box !important;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: #5D4C46;
+}
+
+header {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 80px;
+  background-color: #7B8D8E;
+}
+
+h2 {
+  margin: 0;
+  font-family: 'Pacifico', cursive;
+  color: F2EDD8;
+  font-size: 48px;
+  text-align: center;
+  letter-spacing: 2px;
+}
+
+.main-section {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  width: 100%;
+  margin-top: 15px;
+}
+
+.main-section-2 {
+  margin-top: 25px;
+}
+
+.todo-container {
+  background-color: #E45641;
+  border-radius: 10px;
+  padding: 10px 5px;
+}
+
+.input-task,
+input[type="text"].input-author,
+input[type="text"].input-heading {
+  background: #ffffff;
+  width: 100%;
+  border-radius: 5px;
+  resize: none;
+  opacity: 0.9;
+  border: 0;
+  outline: 0;
+  margin: 0;
+  padding: 5px;
+  margin-top: 5px;
+  font-family: 'Courgette', cursive;
+  font-size: 20px;
+}
+
+.input-task {
+  height: 100px;
+}
+
+input[type="text"].input-author,
+input[type="text"].input-heading {
+  height: 30px;
+}
+
+input[type="text"].input-author:focus,
+input[type="text"].input-heading:focus {
+  border-bottom: 0 !important;
+  box-shadow: none !important;
+}
+
+.input-button {
+  width: 100%;
+  outline: 0;
+  border: 0;
+  margin-top: 5px;
+  font-family: 'Courgette', cursive;
+  font-size: 20px;
+  background-color: #F2EDD8;
+  border-radius: 5px;
+  padding: 5px 0;
+}
+
+.input-button:hover {
+  background-color: #eeeeee;
+}
+
+.input-button:focus {
+  background-color: #F2EDD8;
+}
+
+.container {
+  width: 300px;
+}
+
+.done-container {
+  width: 90%;
+}
+
+.my-collection {
+  border: 0;
+  border-radius: 10px;
+  text-align: center;
+}
+
+.todo-collection {
+  background-color: inherit;
+  opacity: 0.9;
+}
+
+.progress-collection {
+  background-color: #F1A94E;
+}
+
+.review-collection {
+  background-color: #44B3C2;
+}
+
+.done-collection {
+  background-color: #4da74d;
+}
+
+.add-to-icon {
+  font-size: 32px;
+}
+
+.task-author {
+  font-weight: bold;
+  color: #ffffff;
+}
+
+/* override for materialize.css */
+.collection-item {
+  padding: 0 !important;
+  background-color: transparent !important;
+  border: 0 !important;
+}
+
+.card-action {
+  padding: 5px 0 !important;
+}
