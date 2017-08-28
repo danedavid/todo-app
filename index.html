@@ -1,8 +1,54 @@
 <html>
 <head>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/css/materialize.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Courgette|Pacifico" rel="stylesheet">
+  <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
   <title>To-Do App</title>
 </head>
 <body>
-  
+  <header>
+    <h2>To-Do's</h2>
+  </header>
+  <section class="body-section">
+    <section class="main-section">
+      <div class="container todo-container">
+        <div class="input-container">
+          <textarea class="input-task" name="todo-task" rows="5" cols="80" placeholder="Brief description of task here..."></textarea>
+          <input class="input-author" type="text" placeholder="Author" />
+          <button type="button" class="input-button">Enter To-Do</button>
+        </div>
+        <ul class="collection my-collection todo-collection">
+
+        </ul>
+      </div>
+      <div class="container" >
+        <ul class="collection my-collection progress-collection">
+          <li class="collection-header"><h4>In Progress</h4></li>
+          <li class="add-to-icon">
+            <i class="fa fa-plus-square" aria-hidden="true"></i>
+          </li>
+        </ul>
+      </div>
+      <div class="container">
+        <ul class="collection my-collection review-collection">
+          <li class="collection-header"><h4>In Review</h4></li>
+          <li class="add-to-icon">
+            <i class="fa fa-plus-square" aria-hidden="true"></i>
+          </li>
+        </ul>
+      </div>
+    </section>
+    <section class="main-section main-section-2">
+      <div class="container">
+        <ul class="collection my-collection done-collection">
+          <li class="collection-header"><h4>Done</h4></li>
+          <li class="add-to-icon">
+            <i class="fa fa-plus-square" aria-hidden="true"></i>
+          </li>
+        </ul>
+      </div>
+    </section>
+  </section>
 </body>
 </html>
