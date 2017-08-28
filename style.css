@@ -132,7 +132,18 @@ input[type="text"].input-heading:focus {
   font-size: 32px;
 }
 
+.task-author {
+  font-weight: bold;
+  color: #ffffff;
+}
+
+/* override for materialize.css */
 .collection-item {
   padding: 0 !important;
-  background-color: none !important;
+  background-color: transparent !important;
+  border: 0 !important;
+}
+
+.card-action {
+  padding: 5px 0 !important;
 }
