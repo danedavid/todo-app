@@ -15,7 +15,12 @@ app.TodoModel = Backbone.Model.extend({
 // Collection
 app.TodoCollection = Backbone.Collection.extend({
   model: app.TodoModel,
-  localStorage: new Store("real-todo")
+  localStorage: new Store("real-todo"),
+  statusTodo: function () {
+    return this.filter( function(todomodel) {
+      return (todomodel.get("status")=="todo");
+    })
+  }
 });
 
 app.todoList = new app.TodoCollection();
@@ -37,6 +42,7 @@ app.TodoView = Backbone.View.extend({
   el: '#input-todo',
   initialize: function () {
     app.todoList.on("add", this.addOne, this);
+    app.todoList.on("reset", this.addAll, this);
     app.todoList.fetch();
   },
   events: {
@@ -61,6 +67,10 @@ app.TodoView = Backbone.View.extend({
   addOne: function (item) {
     let itemView = new app.ItemView({model: item});
     $("#todo-list").append(itemView.render().el);
+  },
+  addAll: function () {
+    $("#todo-list").html('');
+    _.each(app.todoList.statusTodo(), this.addOne);
   },
   newTodo: function () {
     return {
