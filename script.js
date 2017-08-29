@@ -28,6 +28,11 @@ app.TodoCollection = Backbone.Collection.extend({
     return this.filter( function(todomodel) {
       return (todomodel.get("status")==="progress");
     })
+  },
+  statusReview: function () {
+    return this.filter( function(todomodel) {
+      return (todomodel.get("status")==="review");
+    })
   }
 });
 
@@ -95,11 +100,17 @@ app.MainView = Backbone.View.extend({
     let itemView = new app.ItemView({model: item});
     $("#progress-collection").append(itemView.render().el);
   },
+  addReview: function (item) {
+    let itemView = new app.ItemView({model: item});
+    $("#review-collection").append(itemView.render().el);
+  },
   addAll: function () {
     $("#todo-list").html('');
-    $("#progress-collection").children("collection-item").remove();
+    $("#progress-collection").children(".collection-item").remove();
+    $("#review-collection").children(".collection-item").remove();
     _.each(app.todoList.statusTodo(), this.addTodo);
     _.each(app.todoList.statusProgress(), this.addProgress);
+    _.each(app.todoList.statusReview(), this.addReview);
   },
   newTodo: function () {
     return {
@@ -129,14 +140,23 @@ function onDrop(ev) {
   let id = ev.dataTransfer.getData("text");
 
   let pColl = $("#progress-collection");
+  let rColl = $("#review-collection");
 
-  if( $(ev.target).parents(pColl).length > 0 ) {
+  console.log($(ev.target).parents("#progress-collection"));
+
+  if( $(ev.target).parents("#progress-collection").length > 0 ) {
     pColl.append($("#"+id));
-
     _.each( app.todoList.models, function(elem) {
       if( elem.get("heading").split(" ").join("-") === id ) {
         // elem.set("status", "progress");
         elem.trigger("movedEvent", elem, "progress");
+      }
+    });
+  } else if( $(ev.target).parents("#review-collection").length > 0 ) {
+    rColl.append($("#"+id));
+    _.each( app.todoList.models, function(elem) {
+      if( elem.get("heading").split(" ").join("-") === id ) {
+        elem.trigger("movedEvent", elem, "review");
       }
     });
   }
