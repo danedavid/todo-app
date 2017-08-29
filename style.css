@@ -130,6 +130,7 @@ input[type="text"].input-heading:focus,
 
 .add-to-icon {
   font-size: 32px;
+  opacity: 0.7;
 }
 
 .task-author {
