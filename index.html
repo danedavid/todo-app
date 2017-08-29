@@ -10,7 +10,7 @@
   <header>
     <h2>To-Do's</h2>
   </header>
-  <section class="body-section">
+  <section id="main-container" class="body-section">
     <section class="main-section">
       <div id="input-todo" class="container todo-container">
         <div class="input-container">
@@ -34,7 +34,7 @@
         </ul>
       </div>
       <div class="container" >
-        <ul class="collection my-collection progress-collection">
+        <ul id="progress-collection" class="collection my-collection progress-collection" ondrop="onDrop(event)" ondragover="onDragOver(event)">
           <li class="collection-header"><h4>In Progress</h4></li>
           <li class="add-to-icon">
             <i class="fa fa-plus-square" aria-hidden="true"></i>
@@ -64,7 +64,7 @@
 
   <script id="childTemplate" type="text/template">
     <!--<li class="collection-item">-->
-      <div class="card blue-grey darken-1" draggable="true">
+      <div class="card blue-grey darken-1">
         <div class="card-content white-text">
           <span class="card-title"><%= heading%></span>
           <div class="close-button">

@@ -9,6 +9,9 @@ app.TodoModel = Backbone.Model.extend({
     content: '',
     author: '',
     status: 'todo'
+  },
+  updateStatus: function (statusString) {
+    this.save({ status: statusString});
   }
 });
 
@@ -18,20 +21,23 @@ app.TodoCollection = Backbone.Collection.extend({
   localStorage: new Store("real-todo"),
   statusTodo: function () {
     return this.filter( function(todomodel) {
-      return (todomodel.get("status")=="todo");
+      return (todomodel.get("status")==="todo");
+    })
+  },
+  statusProgress: function () {
+    return this.filter( function(todomodel) {
+      return (todomodel.get("status")==="progress");
     })
   }
 });
 
 app.todoList = new app.TodoCollection();
-app.progressList = new app.TodoCollection();
-app.reviewList = new app.TodoCollection();
-app.doneList = new app.TodoCollection();
 
 app.ItemView = Backbone.View.extend({
   tagName: 'li',
   itemTemplate: _.template($("#childTemplate").html()),
   initialize: function () {
+    this.model.on('movedEvent', this.moved, this);
     this.model.on('destroy', this.remove, this);
   },
   events: {
@@ -39,18 +45,26 @@ app.ItemView = Backbone.View.extend({
   },
   render: function () {
     this.$el.addClass("collection-item");
+    this.$el.attr("draggable","true");
+    this.$el.attr("ondragstart","dragStart(event)");
+    let id = this.model.get("heading").split(" ").join("-");
+    this.$el.attr("id",id);
     this.$el.html(this.itemTemplate(this.model.toJSON()));
     return this;
   },
   destroyItem: function () {
     this.model.destroy();
+  },
+  moved: function (elem, statusString) {
+    console.log(arguments[1]);
+    this.model.updateStatus(statusString);
   }
 });
 
-app.TodoView = Backbone.View.extend({
-  el: '#input-todo',
+app.MainView = Backbone.View.extend({
+  el: '#main-container',
   initialize: function () {
-    app.todoList.on("add", this.addOne, this);
+    app.todoList.on("add", this.addAll, this);            //changeme
     app.todoList.on("reset", this.addAll, this);
     app.todoList.fetch();
   },
@@ -73,13 +87,19 @@ app.TodoView = Backbone.View.extend({
     $("#new-task").val('');
     $("#new-author").val('');
   },
-  addOne: function (item) {
+  addTodo: function (item) {
     let itemView = new app.ItemView({model: item});
     $("#todo-list").append(itemView.render().el);
   },
+  addProgress: function (item) {
+    let itemView = new app.ItemView({model: item});
+    $("#progress-collection").append(itemView.render().el);
+  },
   addAll: function () {
     $("#todo-list").html('');
-    _.each(app.todoList.statusTodo(), this.addOne);
+    $("#progress-collection").children("collection-item").remove();
+    _.each(app.todoList.statusTodo(), this.addTodo);
+    _.each(app.todoList.statusProgress(), this.addProgress);
   },
   newTodo: function () {
     return {
@@ -90,4 +110,34 @@ app.TodoView = Backbone.View.extend({
   }
 });
 
-var todoView = new app.TodoView();
+var todoView = new app.MainView();
+
+
+// Drag and Drop UI
+
+function dragStart(ev) {
+  ev.dataTransfer.setData("text/plain", ev.target.id);
+}
+
+function onDragOver(ev) {
+  ev.preventDefault();
+  ev.dataTransfer.dropEffect = "move"
+}
+
+function onDrop(ev) {
+  ev.preventDefault();
+  let id = ev.dataTransfer.getData("text");
+
+  let pColl = $("#progress-collection");
+
+  if( $(ev.target).parents(pColl).length > 0 ) {
+    pColl.append($("#"+id));
+
+    _.each( app.todoList.models, function(elem) {
+      if( elem.get("heading").split(" ").join("-") === id ) {
+        // elem.set("status", "progress");
+        elem.trigger("movedEvent", elem, "progress");
+      }
+    });
+  }
+}
