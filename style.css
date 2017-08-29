@@ -39,10 +39,8 @@ h2 {
   margin-top: 25px;
 }
 
-.todo-container {
-  background-color: #E45641;
-  border-radius: 10px;
-  padding: 10px 5px;
+.input-container {
+  padding: 20px 5px;
 }
 
 .input-task,
@@ -52,7 +50,7 @@ input[type="text"].input-heading {
   width: 100%;
   border-radius: 5px;
   resize: none;
-  opacity: 0.9;
+  opacity: 0.8;
   border: 0;
   outline: 0;
   margin: 0;
@@ -72,9 +70,11 @@ input[type="text"].input-heading {
 }
 
 input[type="text"].input-author:focus,
-input[type="text"].input-heading:focus {
+input[type="text"].input-heading:focus,
+.input-task:focus {
   border-bottom: 0 !important;
   box-shadow: none !important;
+  opacity: 1;
 }
 
 .input-button {
@@ -109,11 +109,11 @@ input[type="text"].input-heading:focus {
   border: 0;
   border-radius: 10px;
   text-align: center;
+  padding: 15px 0;
 }
 
 .todo-collection {
-  background-color: inherit;
-  opacity: 0.9;
+  background-color: #E45641;
 }
 
 .progress-collection {
@@ -130,11 +130,23 @@ input[type="text"].input-heading:focus {
 
 .add-to-icon {
   font-size: 32px;
+  opacity: 0.7;
 }
 
 .task-author {
   font-weight: bold;
   color: #ffffff;
+}
+
+.close-button {
+  position: absolute;
+  top: 20px;
+  right: 10px;
+}
+
+.close-button:hover {
+  cursor: pointer;
+  opacity: 0.8;
 }
 
 /* override for materialize.css */
@@ -146,4 +158,8 @@ input[type="text"].input-heading:focus {
 
 .card-action {
   padding: 5px 0 !important;
+}
+
+.card-content {
+  position: relative;
 }
