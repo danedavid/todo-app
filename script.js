@@ -1,8 +1,15 @@
 /* script file for index.html */
 
+$(document).ready(updatePluses);
+
 var app = {};
 
-$(document).ready(updatePluses);
+app.collArray = [
+  "#todo-collection",
+  "#progress-collection",
+  "#review-collection",
+  "#done-collection"
+];
 
 // Model
 app.TodoModel = Backbone.Model.extend({
@@ -98,10 +105,9 @@ app.MainView = Backbone.View.extend({
     $("#done-collection").append(itemView.render().el);
   },
   addAll: function () {
-    $("#todo-collection").children(".collection-item").remove();
-    $("#progress-collection").children(".collection-item").remove();
-    $("#review-collection").children(".collection-item").remove();
-    $("#done-collection").children(".collection-item").remove();
+    for( let id in app.collArray ) {
+      $(app.collArray[id]).children(".collection-item").remove();
+    }
     _.each(app.todoList.returnList("todo"), this.addTodo);
     _.each(app.todoList.returnList("progress"), this.addProgress);
     _.each(app.todoList.returnList("review"), this.addReview);
@@ -134,53 +140,31 @@ function onDrop(ev) {
   ev.preventDefault();
   let id = ev.dataTransfer.getData("text");
 
-  let pColl = $("#progress-collection");
-  let rColl = $("#review-collection");
-  let dColl = $("#done-collection");
-  let tColl = $("#todo-collection");
-
-  if( $(ev.target).parents("#progress-collection").length > 0 ) {
-    pColl.append($("#"+id));
-    _.each( app.todoList.models, function(elem) {
-      if( elem.get("heading").split(" ").join("-") === id ) {
-        elem.trigger("movedEvent", elem, "progress");
-      }
-    });
-  } else if( $(ev.target).parents("#review-collection").length > 0 ) {
-    rColl.append($("#"+id));
-    _.each( app.todoList.models, function(elem) {
-      if( elem.get("heading").split(" ").join("-") === id ) {
-        elem.trigger("movedEvent", elem, "review");
-      }
-    });
-  } else if( $(ev.target).parents("#done-collection").length > 0 ) {
-    dColl.append($("#"+id));
-    _.each( app.todoList.models, function(elem) {
-      if( elem.get("heading").split(" ").join("-") === id ) {
-        elem.trigger("movedEvent", elem, "done");
-      }
-    });
-  } else if( $(ev.target).parents("#todo-collection").length > 0 ) {
-    tColl.append($("#"+id));
-    _.each( app.todoList.models, function(elem) {
-      if( elem.get("heading").split(" ").join("-") === id ) {
-        elem.trigger("movedEvent", elem, "todo");
-      }
-    });
+  for( let i in app.collArray ) {
+    if( $(ev.target).parents(app.collArray[i]).length > 0 ) {
+      let collToAdd = $(app.collArray[i]);
+      collToAdd.append($("#"+id));
+      _.each( app.todoList.models, function(elem) {
+        if( elem.get("heading").split(" ").join("-") === id ) {
+          let pattern = /#([a-z]*)-/;
+          elem.trigger("movedEvent", elem, pattern.exec(app.collArray[i])[1]);
+        }
+      });
+    }
   }
   updatePluses();
 }
 
 function updatePluses() {
-  let pColl = $("#progress-collection");
-  let rColl = $("#review-collection");
-  let dColl = $("#done-collection");
   let cName = ".collection-item";
 
-  if( pColl.children(cName).length > 0 ) { pColl.children(".add-to-icon").css("display","none"); }
-  else{ pColl.children(".add-to-icon").css("display","initial"); }
-  if( rColl.children(cName).length > 0 ) { rColl.children(".add-to-icon").css("display","none"); }
-  else{ rColl.children(".add-to-icon").css("display","initial"); }
-  if( dColl.children(cName).length > 0 ) { dColl.children(".add-to-icon").css("display","none"); }
-  else{ dColl.children(".add-to-icon").css("display","initial"); }
+  for( let i = 1; i < app.collArray.length; i++ ) {
+    let collToAdd = $(app.collArray[i]);
+
+    if( collToAdd.children(cName).length > 0 ) {
+      collToAdd.children(".add-to-icon").css("display","none");
+    } else {
+      collToAdd.children(".add-to-icon").css("display","initial");
+    }
+  }
 }
