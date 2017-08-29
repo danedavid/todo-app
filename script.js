@@ -54,7 +54,6 @@ app.ItemView = Backbone.View.extend({
     updatePluses();
   },
   moved: function (elem, statusString) {
-    console.log(arguments[1]);
     this.model.updateStatus(statusString);
   }
 });
