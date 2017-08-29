@@ -1,8 +1,15 @@
 /* script file for index.html */
 
+$(document).ready(updatePluses);
+
 var app = {};
 
-$(document).ready(updatePluses);
+app.collArray = [
+  "#todo-collection",
+  "#progress-collection",
+  "#review-collection",
+  "#done-collection"
+];
 
 // Model
 app.TodoModel = Backbone.Model.extend({
@@ -21,24 +28,9 @@ app.TodoModel = Backbone.Model.extend({
 app.TodoCollection = Backbone.Collection.extend({
   model: app.TodoModel,
   localStorage: new Store("real-todo"),
-  statusTodo: function () {
+  returnList: function (statusString) {
     return this.filter( function(todomodel) {
-      return (todomodel.get("status")==="todo");
-    });
-  },
-  statusProgress: function () {
-    return this.filter( function(todomodel) {
-      return (todomodel.get("status")==="progress");
-    });
-  },
-  statusReview: function () {
-    return this.filter( function(todomodel) {
-      return (todomodel.get("status")==="review");
-    });
-  },
-  statusDone: function () {
-    return this.filter( function(todomodel) {
-      return (todomodel.get("status")==="done");
+      return ( todomodel.get("status") === statusString );
     });
   }
 });
@@ -69,7 +61,6 @@ app.ItemView = Backbone.View.extend({
     updatePluses();
   },
   moved: function (elem, statusString) {
-    console.log(arguments[1]);
     this.model.updateStatus(statusString);
   }
 });
@@ -77,24 +68,21 @@ app.ItemView = Backbone.View.extend({
 app.MainView = Backbone.View.extend({
   el: '#main-container',
   initialize: function () {
-    app.todoList.on("add", this.addAll, this);            //changeme
+    app.todoList.on("add", this.addAll, this);
     app.todoList.on("reset", this.addAll, this);
     app.todoList.fetch();
   },
   events: {
     'keypress #new-author': 'addNewTodoOnEnter',
-    'click #click-todo': 'addNewTodoOnClick'
+    'click #click-todo': 'addNewTodo'
   },
   addNewTodoOnEnter: function (e) {
     if( e.which !== 13 ) {
       return;
     }
-    app.todoList.create(this.newTodo());
-    $("#new-heading").val('');
-    $("#new-task").val('');
-    $("#new-author").val('');
+    this.addNewTodo();
   },
-  addNewTodoOnClick: function () {
+  addNewTodo: function () {
     app.todoList.create(this.newTodo());
     $("#new-heading").val('');
     $("#new-task").val('');
@@ -117,14 +105,13 @@ app.MainView = Backbone.View.extend({
     $("#done-collection").append(itemView.render().el);
   },
   addAll: function () {
-    $("#todo-collection").children(".collection-item").remove();
-    $("#progress-collection").children(".collection-item").remove();
-    $("#review-collection").children(".collection-item").remove();
-    $("#done-collection").children(".collection-item").remove();
-    _.each(app.todoList.statusTodo(), this.addTodo);
-    _.each(app.todoList.statusProgress(), this.addProgress);
-    _.each(app.todoList.statusReview(), this.addReview);
-    _.each(app.todoList.statusDone(), this.addDone);
+    for( let id in app.collArray ) {
+      $(app.collArray[id]).children(".collection-item").remove();
+    }
+    _.each(app.todoList.returnList("todo"), this.addTodo);
+    _.each(app.todoList.returnList("progress"), this.addProgress);
+    _.each(app.todoList.returnList("review"), this.addReview);
+    _.each(app.todoList.returnList("done"), this.addDone);
   },
   newTodo: function () {
     return {
@@ -153,55 +140,31 @@ function onDrop(ev) {
   ev.preventDefault();
   let id = ev.dataTransfer.getData("text");
 
-  let pColl = $("#progress-collection");
-  let rColl = $("#review-collection");
-  let dColl = $("#done-collection");
-  let tColl = $("#todo-collection");
-
-  //console.log($(ev.target).parents("#progress-collection"));
-
-  if( $(ev.target).parents("#progress-collection").length > 0 ) {
-    pColl.append($("#"+id));
-    _.each( app.todoList.models, function(elem) {
-      if( elem.get("heading").split(" ").join("-") === id ) {
-        elem.trigger("movedEvent", elem, "progress");
-      }
-    });
-  } else if( $(ev.target).parents("#review-collection").length > 0 ) {
-    rColl.append($("#"+id));
-    _.each( app.todoList.models, function(elem) {
-      if( elem.get("heading").split(" ").join("-") === id ) {
-        elem.trigger("movedEvent", elem, "review");
-      }
-    });
-  } else if( $(ev.target).parents("#done-collection").length > 0 ) {
-    dColl.append($("#"+id));
-    _.each( app.todoList.models, function(elem) {
-      if( elem.get("heading").split(" ").join("-") === id ) {
-        elem.trigger("movedEvent", elem, "done");
-      }
-    });
-  } else if( $(ev.target).parents("#todo-collection").length > 0 ) {
-    tColl.append($("#"+id));
-    _.each( app.todoList.models, function(elem) {
-      if( elem.get("heading").split(" ").join("-") === id ) {
-        elem.trigger("movedEvent", elem, "todo");
-      }
-    });
+  for( let i in app.collArray ) {
+    if( $(ev.target).parents(app.collArray[i]).length > 0 ) {
+      let collToAdd = $(app.collArray[i]);
+      collToAdd.append($("#"+id));
+      _.each( app.todoList.models, function(elem) {
+        if( elem.get("heading").split(" ").join("-") === id ) {
+          let pattern = /#([a-z]*)-/;
+          elem.trigger("movedEvent", elem, pattern.exec(app.collArray[i])[1]);
+        }
+      });
+    }
   }
   updatePluses();
 }
 
 function updatePluses() {
-  let pColl = $("#progress-collection");
-  let rColl = $("#review-collection");
-  let dColl = $("#done-collection");
   let cName = ".collection-item";
 
-  if( pColl.children(cName).length > 0 ) { pColl.children(".add-to-icon").css("display","none"); }
-  else{ pColl.children(".add-to-icon").css("display","initial"); }
-  if( rColl.children(cName).length > 0 ) { rColl.children(".add-to-icon").css("display","none"); }
-  else{ rColl.children(".add-to-icon").css("display","initial"); }
-  if( dColl.children(cName).length > 0 ) { dColl.children(".add-to-icon").css("display","none"); }
-  else{ dColl.children(".add-to-icon").css("display","initial"); }
+  for( let i = 1; i < app.collArray.length; i++ ) {
+    let collToAdd = $(app.collArray[i]);
+
+    if( collToAdd.children(cName).length > 0 ) {
+      collToAdd.children(".add-to-icon").css("display","none");
+    } else {
+      collToAdd.children(".add-to-icon").css("display","initial");
+    }
+  }
 }
