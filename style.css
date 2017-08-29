@@ -39,10 +39,8 @@ h2 {
   margin-top: 25px;
 }
 
-.todo-container {
-  background-color: #E45641;
-  border-radius: 10px;
-  padding: 10px 5px;
+.input-container {
+  padding: 20px 5px;
 }
 
 .input-task,
@@ -111,11 +109,11 @@ input[type="text"].input-heading:focus,
   border: 0;
   border-radius: 10px;
   text-align: center;
+  padding: 15px 0;
 }
 
 .todo-collection {
-  background-color: inherit;
-  opacity: 0.9;
+  background-color: #E45641;
 }
 
 .progress-collection {

@@ -2,6 +2,8 @@
 
 var app = {};
 
+$(document).ready(updatePluses);
+
 // Model
 app.TodoModel = Backbone.Model.extend({
   defaults: {
@@ -64,6 +66,7 @@ app.ItemView = Backbone.View.extend({
   },
   destroyItem: function () {
     this.model.destroy();
+    updatePluses();
   },
   moved: function (elem, statusString) {
     console.log(arguments[1]);
@@ -99,7 +102,7 @@ app.MainView = Backbone.View.extend({
   },
   addTodo: function (item) {
     let itemView = new app.ItemView({model: item});
-    $("#todo-list").append(itemView.render().el);
+    $("#todo-collection").append(itemView.render().el);
   },
   addProgress: function (item) {
     let itemView = new app.ItemView({model: item});
@@ -114,7 +117,7 @@ app.MainView = Backbone.View.extend({
     $("#done-collection").append(itemView.render().el);
   },
   addAll: function () {
-    $("#todo-list").html('');
+    $("#todo-collection").children(".collection-item").remove();
     $("#progress-collection").children(".collection-item").remove();
     $("#review-collection").children(".collection-item").remove();
     $("#done-collection").children(".collection-item").remove();
@@ -153,6 +156,7 @@ function onDrop(ev) {
   let pColl = $("#progress-collection");
   let rColl = $("#review-collection");
   let dColl = $("#done-collection");
+  let tColl = $("#todo-collection");
 
   //console.log($(ev.target).parents("#progress-collection"));
 
@@ -177,5 +181,27 @@ function onDrop(ev) {
         elem.trigger("movedEvent", elem, "done");
       }
     });
+  } else if( $(ev.target).parents("#todo-collection").length > 0 ) {
+    tColl.append($("#"+id));
+    _.each( app.todoList.models, function(elem) {
+      if( elem.get("heading").split(" ").join("-") === id ) {
+        elem.trigger("movedEvent", elem, "todo");
+      }
+    });
   }
+  updatePluses();
+}
+
+function updatePluses() {
+  let pColl = $("#progress-collection");
+  let rColl = $("#review-collection");
+  let dColl = $("#done-collection");
+  let cName = ".collection-item";
+
+  if( pColl.children(cName).length > 0 ) { pColl.children(".add-to-icon").css("display","none"); }
+  else{ pColl.children(".add-to-icon").css("display","initial"); }
+  if( rColl.children(cName).length > 0 ) { rColl.children(".add-to-icon").css("display","none"); }
+  else{ rColl.children(".add-to-icon").css("display","initial"); }
+  if( dColl.children(cName).length > 0 ) { dColl.children(".add-to-icon").css("display","none"); }
+  else{ dColl.children(".add-to-icon").css("display","initial"); }
 }
