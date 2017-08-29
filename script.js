@@ -22,17 +22,22 @@ app.TodoCollection = Backbone.Collection.extend({
   statusTodo: function () {
     return this.filter( function(todomodel) {
       return (todomodel.get("status")==="todo");
-    })
+    });
   },
   statusProgress: function () {
     return this.filter( function(todomodel) {
       return (todomodel.get("status")==="progress");
-    })
+    });
   },
   statusReview: function () {
     return this.filter( function(todomodel) {
       return (todomodel.get("status")==="review");
-    })
+    });
+  },
+  statusDone: function () {
+    return this.filter( function(todomodel) {
+      return (todomodel.get("status")==="done");
+    });
   }
 });
 
@@ -104,13 +109,19 @@ app.MainView = Backbone.View.extend({
     let itemView = new app.ItemView({model: item});
     $("#review-collection").append(itemView.render().el);
   },
+  addDone: function (item) {
+    let itemView = new app.ItemView({model: item});
+    $("#done-collection").append(itemView.render().el);
+  },
   addAll: function () {
     $("#todo-list").html('');
     $("#progress-collection").children(".collection-item").remove();
     $("#review-collection").children(".collection-item").remove();
+    $("#done-collection").children(".collection-item").remove();
     _.each(app.todoList.statusTodo(), this.addTodo);
     _.each(app.todoList.statusProgress(), this.addProgress);
     _.each(app.todoList.statusReview(), this.addReview);
+    _.each(app.todoList.statusDone(), this.addDone);
   },
   newTodo: function () {
     return {
@@ -141,14 +152,14 @@ function onDrop(ev) {
 
   let pColl = $("#progress-collection");
   let rColl = $("#review-collection");
+  let dColl = $("#done-collection");
 
-  console.log($(ev.target).parents("#progress-collection"));
+  //console.log($(ev.target).parents("#progress-collection"));
 
   if( $(ev.target).parents("#progress-collection").length > 0 ) {
     pColl.append($("#"+id));
     _.each( app.todoList.models, function(elem) {
       if( elem.get("heading").split(" ").join("-") === id ) {
-        // elem.set("status", "progress");
         elem.trigger("movedEvent", elem, "progress");
       }
     });
@@ -157,6 +168,13 @@ function onDrop(ev) {
     _.each( app.todoList.models, function(elem) {
       if( elem.get("heading").split(" ").join("-") === id ) {
         elem.trigger("movedEvent", elem, "review");
+      }
+    });
+  } else if( $(ev.target).parents("#done-collection").length > 0 ) {
+    dColl.append($("#"+id));
+    _.each( app.todoList.models, function(elem) {
+      if( elem.get("heading").split(" ").join("-") === id ) {
+        elem.trigger("movedEvent", elem, "done");
       }
     });
   }
