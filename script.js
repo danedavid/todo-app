@@ -67,18 +67,15 @@ app.MainView = Backbone.View.extend({
   },
   events: {
     'keypress #new-author': 'addNewTodoOnEnter',
-    'click #click-todo': 'addNewTodoOnClick'
+    'click #click-todo': 'addNewTodo'
   },
   addNewTodoOnEnter: function (e) {
     if( e.which !== 13 ) {
       return;
     }
-    app.todoList.create(this.newTodo());
-    $("#new-heading").val('');
-    $("#new-task").val('');
-    $("#new-author").val('');
+    this.addNewTodo();
   },
-  addNewTodoOnClick: function () {
+  addNewTodo: function () {
     app.todoList.create(this.newTodo());
     $("#new-heading").val('');
     $("#new-task").val('');
