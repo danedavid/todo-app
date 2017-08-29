@@ -21,24 +21,9 @@ app.TodoModel = Backbone.Model.extend({
 app.TodoCollection = Backbone.Collection.extend({
   model: app.TodoModel,
   localStorage: new Store("real-todo"),
-  statusTodo: function () {
+  returnList: function (statusString) {
     return this.filter( function(todomodel) {
-      return (todomodel.get("status")==="todo");
-    });
-  },
-  statusProgress: function () {
-    return this.filter( function(todomodel) {
-      return (todomodel.get("status")==="progress");
-    });
-  },
-  statusReview: function () {
-    return this.filter( function(todomodel) {
-      return (todomodel.get("status")==="review");
-    });
-  },
-  statusDone: function () {
-    return this.filter( function(todomodel) {
-      return (todomodel.get("status")==="done");
+      return ( todomodel.get("status") === statusString );
     });
   }
 });
@@ -77,7 +62,7 @@ app.ItemView = Backbone.View.extend({
 app.MainView = Backbone.View.extend({
   el: '#main-container',
   initialize: function () {
-    app.todoList.on("add", this.addAll, this);            //changeme
+    app.todoList.on("add", this.addAll, this);
     app.todoList.on("reset", this.addAll, this);
     app.todoList.fetch();
   },
@@ -121,10 +106,10 @@ app.MainView = Backbone.View.extend({
     $("#progress-collection").children(".collection-item").remove();
     $("#review-collection").children(".collection-item").remove();
     $("#done-collection").children(".collection-item").remove();
-    _.each(app.todoList.statusTodo(), this.addTodo);
-    _.each(app.todoList.statusProgress(), this.addProgress);
-    _.each(app.todoList.statusReview(), this.addReview);
-    _.each(app.todoList.statusDone(), this.addDone);
+    _.each(app.todoList.returnList("todo"), this.addTodo);
+    _.each(app.todoList.returnList("progress"), this.addProgress);
+    _.each(app.todoList.returnList("review"), this.addReview);
+    _.each(app.todoList.returnList("done"), this.addDone);
   },
   newTodo: function () {
     return {
@@ -157,8 +142,6 @@ function onDrop(ev) {
   let rColl = $("#review-collection");
   let dColl = $("#done-collection");
   let tColl = $("#todo-collection");
-
-  //console.log($(ev.target).parents("#progress-collection"));
 
   if( $(ev.target).parents("#progress-collection").length > 0 ) {
     pColl.append($("#"+id));
