@@ -124,10 +124,13 @@ app.MainView = Backbone.View.extend({
     this.addNewTodo();
   },
   addNewTodo: function () {
-    app.todoList.create(this.newTodo());
-    $("#new-heading").val('');
-    $("#new-task").val('');
-    $("#new-author").val('');
+    let newModel = this.newTodo();
+    if( newModel ) {
+      app.todoList.create(this.newTodo());
+      $("#new-heading").val('');
+      $("#new-task").val('');
+      $("#new-author").val('');
+    }
   },
   addTodo: function (item) {
     let itemView = new app.ItemView({model: item});
@@ -155,10 +158,27 @@ app.MainView = Backbone.View.extend({
     _.each(app.todoList.returnList("done"), this.addDone);
   },
   newTodo: function () {
+    let inHeading = $("#new-heading").val().trim();
+    let inContent = $("#new-task").val().trim();
+    let inAuthor = $("#new-author").val().trim();
+
+    if( !inHeading ) {
+      alert("Task must have a heading!");
+      return;
+    }
+    if( !inContent ) {
+      alert("Task must have a content!");
+      return;
+    }
+    if( !inAuthor ) {
+      alert("Task must have an author!");
+      return;
+    }
+
     return {
-      heading: $("#new-heading").val().trim(),
-      content: $("#new-task").val().trim(),
-      author: $("#new-author").val().trim()
+      heading: inHeading,
+      content: inContent,
+      author: inAuthor
     };
   }
 });
