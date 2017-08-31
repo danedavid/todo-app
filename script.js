@@ -42,10 +42,16 @@ app.ItemView = Backbone.View.extend({
   itemTemplate: _.template($("#childTemplate").html()),
   initialize: function () {
     this.model.on('movedEvent', this.moved, this);
+    this.model.on('change', this.render, this);
     this.model.on('destroy', this.remove, this);
   },
   events: {
-    'click .close-button': 'destroyItem'
+    'click .close-button': 'destroyItem',
+    'dblclick .card-title': 'editModel',
+    'dblclick p': 'editModel',
+    'dblclick .task-author': 'editModel',
+    'blur .hidden-input': 'changeModel',
+    'keypress .hidden-input': 'changeModelOnEnter'
   },
   render: function () {
     this.$el.addClass("collection-item");
@@ -53,7 +59,20 @@ app.ItemView = Backbone.View.extend({
     this.$el.attr("ondragstart","dragStart(event)");
     let id = this.model.get("heading").split(" ").join("-");
     this.$el.attr("id",id);
+
     this.$el.html(this.itemTemplate(this.model.toJSON()));
+
+    let currStatus = this.model.get("status");
+    let taskStatusText = this.$el.find(".task-status");
+    let colorCode;
+    switch ( currStatus ) {
+      case "todo": colorCode = "#ff4d4d"; break;
+      case "progress": colorCode = "#e6ac00"; break;
+      case "review": colorCode = "#4d88ff"; break;
+      case "done": colorCode = "#00b300"; break;
+    }
+    taskStatusText.css("color",colorCode);
+
     return this;
   },
   destroyItem: function () {
@@ -62,6 +81,28 @@ app.ItemView = Backbone.View.extend({
   },
   moved: function (elem, statusString) {
     this.model.updateStatus(statusString);
+  },
+  editModel: function (ev) {
+    $(ev.target).css("display","none");
+    let inputField = $(ev.target).next();
+    inputField.css("display","inline-block");
+    inputField.focus();
+  },
+  changeModel: function (ev) {
+    let inputField = $(ev.target);
+    let textValue = inputField.val().trim();
+
+    if(textValue) {
+      let editField = inputField.attr("data-edit-field");
+      this.model.save({ [editField]: textValue });
+    }
+    inputField.css("display","none");
+    inputField.prev().css("display","block");
+  },
+  changeModelOnEnter: function (ev) {
+    if( ev.which === 13 ) {
+      this.changeModel(ev);
+    }
   }
 });
 
@@ -142,8 +183,10 @@ function onDrop(ev) {
 
   for( let i in app.collArray ) {
     if( $(ev.target).parents(app.collArray[i]).length > 0 ) {
+
       let collToAdd = $(app.collArray[i]);
       collToAdd.append($("#"+id));
+
       _.each( app.todoList.models, function(elem) {
         if( elem.get("heading").split(" ").join("-") === id ) {
           let pattern = /#([a-z]*)-/;
