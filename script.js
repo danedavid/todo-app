@@ -42,6 +42,7 @@ app.ItemView = Backbone.View.extend({
   itemTemplate: _.template($("#childTemplate").html()),
   initialize: function () {
     this.model.on('movedEvent', this.moved, this);
+    this.model.on('change', this.render, this);
     this.model.on('destroy', this.remove, this);
   },
   events: {
@@ -53,7 +54,28 @@ app.ItemView = Backbone.View.extend({
     this.$el.attr("ondragstart","dragStart(event)");
     let id = this.model.get("heading").split(" ").join("-");
     this.$el.attr("id",id);
+
     this.$el.html(this.itemTemplate(this.model.toJSON()));
+
+    let currStatus = this.model.get("status");
+    let taskStatusText = this.$el.find(".task-status");
+    let colorCode;
+    switch ( currStatus ) {
+      case "todo":
+        colorCode = "#ff4d4d";
+        break;
+      case "progress":
+        colorCode = "#e6ac00";
+        break;
+      case "review":
+        colorCode = "#4d88ff";
+        break;
+      case "done":
+        colorCode = "#00b300";
+        break;
+    }
+    taskStatusText.css("color",colorCode);
+
     return this;
   },
   destroyItem: function () {
@@ -142,8 +164,10 @@ function onDrop(ev) {
 
   for( let i in app.collArray ) {
     if( $(ev.target).parents(app.collArray[i]).length > 0 ) {
+
       let collToAdd = $(app.collArray[i]);
       collToAdd.append($("#"+id));
+
       _.each( app.todoList.models, function(elem) {
         if( elem.get("heading").split(" ").join("-") === id ) {
           let pattern = /#([a-z]*)-/;

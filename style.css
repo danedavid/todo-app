@@ -133,10 +133,31 @@ input[type="text"].input-heading:focus,
   opacity: 0.7;
 }
 
-.task-author {
+.task-author,
+.task-status {
   font-weight: bold;
   color: #ffffff;
 }
+
+.task-status {
+  text-transform: capitalize;
+}
+/*
+.status-todo .task-status{
+  color: #ff4d4d;
+}
+
+.status-progress .task-status{
+  color: #e6ac00;
+}
+
+.status-review .task-status{
+  color: #4d88ff;
+}
+
+.status-done .task-status{
+  color: #00b300;
+}*/
 
 .close-button {
   position: absolute;
