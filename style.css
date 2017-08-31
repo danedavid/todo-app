@@ -182,6 +182,12 @@ input[type="text"].hidden-input:focus {
   border: 0 !important;
 }
 
+.done-collection .collection-item {
+  display: inline-block;
+  width: 30%;
+  margin-left: 15px;
+}
+
 .card-action {
   padding: 5px 0 !important;
 }
